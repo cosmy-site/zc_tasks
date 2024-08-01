@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zc_tasks/pages/may_home_page.dart';
 import 'package:zc_tasks/theme/theme.dart';
+import 'package:zc_tasks/pages/login_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: TasksTheme.darkTheme, // Use light theme
-      home: const MyHomePage(title: 'Основной тайтл'),
+      home: const LoginPage(),
     );
   }
 }
