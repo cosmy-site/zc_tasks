@@ -8,7 +8,7 @@ class TasksTheme {
       brightness: Brightness.light, // Светлая тема
       primary: const Color(0xFF3F88F7), // Основной цвет
       onPrimary: Colors.white, // Цвет текста на основном фоне
-      secondary: const Color(0xFF909090), // Вторичный цвет (заголовки, текст)
+      secondary: const Color(0xFFEAEAEA), // Вторичный цвет (заголовки, текст)
       onSecondary: Colors.black, // Цвет текста на вторичном фоне
       error: Colors.red, // Цвет ошибки
       onError: Colors.white, // Цвет текста на ошибке
@@ -23,12 +23,6 @@ class TasksTheme {
       backgroundColor: Color(0xFF3F88F7),
       titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      // Фон BottomNavigationBar
-      backgroundColor: Color(0xFF1E1E1E),
-      selectedItemColor: Color(0xFF3F88F7), // Цвет активных иконок и текста
-      unselectedItemColor: Color(0xFFCECECE), // Цвет неактивных иконок и текста
-    ),
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -38,7 +32,7 @@ class TasksTheme {
       brightness: Brightness.dark, // Темная тема
       primary: const Color(0xFF3F88F7), // Основной цвет
       onPrimary: Colors.white, // Цвет текста на основном фоне
-      secondary: const Color(0xFF909090), // Вторичный цвет (заголовки, текст)
+      secondary: Color(0xFFEAEAEA), // Вторичный цвет (заголовки, текст)
       onSecondary: Colors.black, // Цвет текста на вторичном фоне
       error: Colors.red, // Цвет ошибки
       onError: Colors.white, // Цвет текста на ошибке
@@ -52,12 +46,6 @@ class TasksTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF3F88F7),
       titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      // Фон BottomNavigationBar
-      backgroundColor: Color(0xFF1E1E1E),
-      selectedItemColor: Color(0xFF3F88F7), // Цвет активных иконок и текста
-      unselectedItemColor: Color(0xFFCECECE), // Цвет неактивных иконок и текста
     ),
   );
 }
