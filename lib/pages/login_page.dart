@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../theme/theme.dart'; // Импорт файла с темой
+import 'package:zc_tasks/pages/main_page.dart';
+// Импорт файла с темой
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -138,7 +139,10 @@ class _LoginPageState extends State<LoginPage> {
                       // Логин
                       // ...
                       // Переход на главную страницу
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainPage()));
                     } else {
                       // Регистрация
                       // ...
