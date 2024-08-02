@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979566347087",
+    "project_id": "zc-tasks",
+    "storage_bucket": "zc-tasks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979566347087:android:77987b937eaeaa7172fb3a",
+        "android_client_info": {
+          "package_name": "com.example.zc_tasks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbO8RdoUAcIpocZnVm9khztRHiE6yfujc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
