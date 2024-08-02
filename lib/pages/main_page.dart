@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zc_tasks/screens/all_tasks.dart';
 import 'package:zc_tasks/theme/theme.dart';
 import 'package:zc_tasks/screens/profile.dart'; // Импорт profile_page
 
@@ -15,7 +16,7 @@ class _MainPageState extends State<MainPage> {
 
   // Список виджетов для каждой вкладки
   static const List<Widget> _widgetOptions = <Widget>[
-    Text('Задачи'), // Виджет для вкладки "Задачи"
+    TaskPage(), // Виджет для вкладки "Задачи"
     Text('Сегодня'), // Виджет для вкладки "Сегодня"
     Text('Выполнено'), // Виджет для вкладки "Выполнено"
     ProfilePage(), // Виджет для вкладки "Профиль"
