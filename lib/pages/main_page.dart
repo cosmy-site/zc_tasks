@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zc_tasks/theme/theme.dart';
+import 'package:zc_tasks/screens/profile.dart'; // Импорт profile_page
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -17,7 +18,7 @@ class _MainPageState extends State<MainPage> {
     Text('Задачи'), // Виджет для вкладки "Задачи"
     Text('Сегодня'), // Виджет для вкладки "Сегодня"
     Text('Выполнено'), // Виджет для вкладки "Выполнено"
-    Text('Профиль'), // Виджет для вкладки "Профиль"
+    ProfilePage(), // Виджет для вкладки "Профиль"
   ];
 
   // Список заголовков для каждой вкладки
