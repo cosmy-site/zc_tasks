@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zc_tasks/pages/main_page.dart';
-// Импорт файла с темой
+import 'package:zc_tasks/services/firebase_auth.dart'; // Импорт AuthService
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,6 +24,12 @@ class _LoginPageState extends State<LoginPage> {
   // Флаг для показа/скрытия пароля
   bool _showPassword = false;
 
+  // Экземпляр AuthService
+  final AuthService _authService = AuthService();
+
+  // Сообщение об ошибке
+  String? _errorMessage;
+
   // Освобождение ресурсов контроллеров при выходе из виджета
   @override
   void dispose() {
@@ -37,11 +43,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Убираем AppBar
-      // appBar: AppBar(
-      //   title:
-      //       Text(_isLoginMode ? 'Вход' : 'Регистрация'), // Заголовок страницы
-      // ),
       body: Center(
         // Центрируем форму по вертикали
         child: SingleChildScrollView(
@@ -72,41 +73,78 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.center, // Выравниваем текст по центру
                 ),
                 const SizedBox(height: 32.0), // Отступ между названием и формой
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 Form(
                   key: _formKey, // Ключ для управления формой
-                  child: SingleChildScrollView(
-                    // Добавляем SingleChildScrollView для прокрутки
-                    child: Column(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center, // Центрируем по вертикали
-                      crossAxisAlignment:
-                          CrossAxisAlignment.stretch, // Выравнивание по ширине
-                      children: [
-                        // Поле ввода почты для входа и регистрации
-                        TextFormField(
-                          controller:
-                              _emailController, // Контроллер для поля почты
-                          decoration: const InputDecoration(
-                            labelText: 'Почта', // Подсказка для поля
-                          ),
-                          validator: (value) {
-                            // Валидация поля почты
-                            if (value == null || value.isEmpty) {
-                              return 'Пожалуйста, введите почту'; // Сообщение об ошибке
-                            }
-                            if (!value.contains('@')) {
-                              return 'Некорректный формат почты'; // Сообщение об ошибке
-                            }
-                            return null; // Нет ошибки
-                          },
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.center, // Центрируем по вертикали
+                    crossAxisAlignment:
+                        CrossAxisAlignment.stretch, // Выравнивание по ширине
+                    children: [
+                      // Поле ввода почты для входа и регистрации
+                      TextFormField(
+                        controller:
+                            _emailController, // Контроллер для поля почты
+                        decoration: const InputDecoration(
+                          labelText: 'Почта', // Подсказка для поля
                         ),
+                        validator: (value) {
+                          // Валидация поля почты
+                          if (value == null || value.isEmpty) {
+                            return 'Пожалуйста, введите почту'; // Сообщение об ошибке
+                          }
+                          if (!value.contains('@')) {
+                            return 'Некорректный формат почты'; // Сообщение об ошибке
+                          }
+                          return null; // Нет ошибки
+                        },
+                      ),
+                      const SizedBox(height: 16.0), // Отступ между полями
+                      TextFormField(
+                        controller:
+                            _passwordController, // Контроллер для поля пароля
+                        obscureText: !_showPassword, // Скрытие текста пароля
+                        decoration: InputDecoration(
+                          labelText: 'Пароль', // Подсказка для поля
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              // Переключение показа/скрытия пароля
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
+                            icon: Icon(_showPassword
+                                ? Icons.visibility
+                                : Icons
+                                    .visibility_off), // Иконка для показа/скрытия
+                          ),
+                        ),
+                        validator: (value) {
+                          // Валидация поля пароля
+                          if (value == null || value.isEmpty) {
+                            return 'Пожалуйста, введите пароль'; // Сообщение об ошибке
+                          }
+                          return null; // Нет ошибки
+                        },
+                      ),
+                      if (!_isLoginMode) // Поле подтверждения пароля только для регистрации
                         const SizedBox(height: 16.0), // Отступ между полями
+                      if (!_isLoginMode)
                         TextFormField(
                           controller:
-                              _passwordController, // Контроллер для поля пароля
+                              _confirmPasswordController, // Контроллер для поля подтверждения пароля
                           obscureText: !_showPassword, // Скрытие текста пароля
                           decoration: InputDecoration(
-                            labelText: 'Пароль', // Подсказка для поля
+                            labelText: 'Повторите пароль', // Подсказка для поля
                             suffixIcon: IconButton(
                               onPressed: () {
                                 // Переключение показа/скрытия пароля
@@ -121,98 +159,89 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           validator: (value) {
-                            // Валидация поля пароля
+                            // Валидация поля подтверждения пароля
                             if (value == null || value.isEmpty) {
-                              return 'Пожалуйста, введите пароль'; // Сообщение об ошибке
+                              return 'Пожалуйста, повторите пароль'; // Сообщение об ошибке
+                            }
+                            if (value != _passwordController.text) {
+                              return 'Пароли не совпадают'; // Сообщение об ошибке
                             }
                             return null; // Нет ошибки
                           },
                         ),
-                        if (!_isLoginMode) // Поле подтверждения пароля только для регистрации
-                          const SizedBox(height: 16.0), // Отступ между полями
-                        if (!_isLoginMode)
-                          TextFormField(
-                            controller:
-                                _confirmPasswordController, // Контроллер для поля подтверждения пароля
-                            obscureText:
-                                !_showPassword, // Скрытие текста пароля
-                            decoration: InputDecoration(
-                              labelText:
-                                  'Повторите пароль', // Подсказка для поля
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  // Переключение показа/скрытия пароля
-                                  setState(() {
-                                    _showPassword = !_showPassword;
-                                  });
-                                },
-                                icon: Icon(_showPassword
-                                    ? Icons.visibility
-                                    : Icons
-                                        .visibility_off), // Иконка для показа/скрытия
-                              ),
-                            ),
-                            validator: (value) {
-                              // Валидация поля подтверждения пароля
-                              if (value == null || value.isEmpty) {
-                                return 'Пожалуйста, повторите пароль'; // Сообщение об ошибке
-                              }
-                              if (value != _passwordController.text) {
-                                return 'Пароли не совпадают'; // Сообщение об ошибке
-                              }
-                              return null; // Нет ошибки
-                            },
-                          ),
-                        const SizedBox(height: 32.0), // Отступ перед кнопкой
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .primary, // Основной цвет
-                            foregroundColor: Colors.white, // Белый текст
-                          ),
-                          onPressed: () {
-                            // Обработка нажатия на кнопку "Войти" или "Зарегистрироваться"
-                            if (_formKey.currentState!.validate()) {
-                              // Проверка валидности формы
+                      const SizedBox(height: 32.0), // Отступ перед кнопкой
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary, // Основной цвет
+                          foregroundColor: Colors.white, // Белый текст
+                        ),
+                        onPressed: () async {
+                          // Обработка нажатия на кнопку "Войти" или "Зарегистрироваться"
+                          if (_formKey.currentState!.validate()) {
+                            // Проверка валидности формы
+                            setState(() {
+                              _errorMessage = null;
+                            });
+
+                            try {
                               if (_isLoginMode) {
                                 // Логин
-                                // ...
-                                // Переход на главную страницу
-                                Navigator.pushReplacement(
+                                final userCredential = await _authService
+                                    .signInWithEmailAndPassword(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
+                                if (userCredential != null) {
+                                  // Переход на главную страницу
+                                  Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MainPage()));
+                                        builder: (context) => const MainPage()),
+                                  );
+                                }
                               } else {
                                 // Регистрация
-                                // ...
-                                // Переход на страницу входа
-                                setState(() {
-                                  _isLoginMode = true;
-                                });
+                                final userCredential = await _authService
+                                    .createUserWithEmailAndPassword(
+                                  _emailController.text,
+                                  _passwordController.text,
+                                );
+                                if (userCredential != null) {
+                                  // Переход на страницу входа
+                                  setState(() {
+                                    _isLoginMode = true;
+                                  });
+                                }
                               }
+                            } catch (e) {
+                              setState(() {
+                                _errorMessage = e.toString();
+                              });
                             }
-                          },
-                          child: Text(_isLoginMode
-                              ? 'Войти'
-                              : 'Зарегистрироваться'), // Текст на кнопке
-                        ),
-                        const SizedBox(
-                            height: 16.0), // Отступ перед текстовой кнопкой
-                        TextButton(
-                          onPressed: () {
-                            // Переключение между режимами входа и регистрации
-                            setState(() {
-                              _isLoginMode = !_isLoginMode;
-                            });
-                          },
-                          child: Text(_isLoginMode
+                          }
+                        },
+                        child: Text(_isLoginMode
+                            ? 'Войти'
+                            : 'Зарегистрироваться'), // Текст на кнопке
+                      ),
+                      const SizedBox(
+                          height: 16.0), // Отступ перед текстовой кнопкой
+                      TextButton(
+                        onPressed: () {
+                          // Переключение между режимами входа и регистрации
+                          setState(() {
+                            _isLoginMode = !_isLoginMode;
+                          });
+                        },
+                        child: Text(
+                          _isLoginMode
                               ? 'У меня ещё нет аккаунта'
-                              : 'Уже есть аккаунт? Войти'), // Текст на кнопке
+                              : 'Уже есть аккаунт? Войти', // Текст на кнопке
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
