@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="23" /> <!-- я добавил -->
     <application
         android:label="zc_tasks"
         android:name="${applicationName}"
