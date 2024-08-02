@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:zc_tasks/screens/all_tasks.dart';
 import 'package:zc_tasks/theme/theme.dart';
 import 'package:zc_tasks/screens/profile.dart'; // Импорт profile_page
@@ -35,6 +36,187 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _selectedIndex = index; // Обновление индекса выбранной вкладки
     });
+  }
+
+  // Функция для показа диалогового окна добавления задачи
+  void _showAddTaskDialog() {
+    // Создаем контроллеры для текстовых полей диалога
+    final _taskNameController = TextEditingController();
+    final _taskDescriptionController =
+        TextEditingController(); // Контроллер для описания
+    final _deadlineController = TextEditingController();
+    DateTime? _selectedDeadline; // Переменная для хранения выбранного дедлайна
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          // Используем Dialog вместо AlertDialog
+          child: Padding(
+            padding: const EdgeInsets.all(20.0), // Отступы для содержимого
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Заголовок диалога
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Добавить задачу',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                // Поле ввода названия задачи
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextField(
+                    controller: _taskNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Название задачи',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Поле ввода описания задачи
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: TextField(
+                    controller: _taskDescriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Описание задачи',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Поле выбора дедлайна
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _deadlineController,
+                          decoration: const InputDecoration(
+                            labelText: 'Дедлайн',
+                          ),
+                          readOnly: true, // Делаем поле только для чтения
+                          onTap: () async {
+                            // Открываем календарь для выбора даты и времени
+                            _selectedDeadline = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2100),
+                            );
+                            if (_selectedDeadline != null) {
+                              // Если дата выбрана, открываем TimePicker для выбора времени
+                              TimeOfDay? selectedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(),
+                              );
+                              if (selectedTime != null) {
+                                // Обновляем контроллер дедлайна с выбранной датой и временем
+                                _selectedDeadline = DateTime(
+                                  _selectedDeadline!.year,
+                                  _selectedDeadline!.month,
+                                  _selectedDeadline!.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute,
+                                );
+                                _deadlineController.text =
+                                    DateFormat('yyyy-MM-dd HH:mm')
+                                        .format(_selectedDeadline!);
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          // Открываем календарь для выбора даты и времени
+                          _selectedDeadline = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2100),
+                          );
+                          if (_selectedDeadline != null) {
+                            // Если дата выбрана, открываем TimePicker для выбора времени
+                            TimeOfDay? selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (selectedTime != null) {
+                              // Обновляем контроллер дедлайна с выбранной датой и временем
+                              _selectedDeadline = DateTime(
+                                _selectedDeadline!.year,
+                                _selectedDeadline!.month,
+                                _selectedDeadline!.day,
+                                selectedTime.hour,
+                                selectedTime.minute,
+                              );
+                              _deadlineController.text =
+                                  DateFormat('yyyy-MM-dd HH:mm')
+                                      .format(_selectedDeadline!);
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.calendar_today),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Кнопки "Отмена" и "Добавить"
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Кнопка отмены
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Отмена'),
+                      ),
+                      // Кнопка подтверждения
+                      TextButton(
+                        onPressed: () {
+                          // Получаем значения из текстовых полей
+                          String taskName = _taskNameController.text;
+                          String taskDescription = _taskDescriptionController
+                              .text; // Получаем описание
+                          DateTime? deadline = _selectedDeadline;
+
+                          // Проверяем, что поля не пустые
+                          if (taskName.isNotEmpty && deadline != null) {
+                            // Добавляем новую задачу (здесь нужно реализовать логику добавления)
+                            // Например, можно добавить задачу в список задач
+                            // ...
+
+                            // Закрываем диалоговое окно
+                            Navigator.pop(context);
+                          } else {
+                            // Показываем сообщение об ошибке, если поля пустые
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Пожалуйста, заполните все поля'),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Добавить'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -77,6 +259,11 @@ class _MainPageState extends State<MainPage> {
           unselectedItemColor: Theme.of(context).colorScheme.secondary,
           onTap: _onItemTapped, // Обработчик нажатия на вкладку
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddTaskDialog, // Вызываем диалоговое окно при нажатии
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add),
       ),
     );
   }

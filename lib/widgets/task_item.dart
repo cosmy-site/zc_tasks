@@ -23,41 +23,18 @@ class TaskItem extends StatelessWidget {
     }
 
     return Card(
+      color: const Color(0xFF1E1E1E), // Устанавливаем фон карточки
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Убираем Row с кружком справа сверху
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Expanded(
-            //       child: Text(
-            //         taskName,
-            //         style: const TextStyle(
-            //           fontSize: 18,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //     ),
-            //     Container(
-            //       // Кружок с цветом приоритета
-            //       margin: const EdgeInsets.only(right: 16.0), // Отступ справа
-            //       width: 20,
-            //       height: 20,
-            //       decoration: BoxDecoration(
-            //         shape: BoxShape.circle,
-            //         color: circleColor,
-            //       ),
-            //     ),
-            //   ],
-            // ),
             Text(
               taskName,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.white, // Белый текст для задачи
               ),
             ),
             const SizedBox(height: 8),
@@ -80,7 +57,10 @@ class TaskItem extends StatelessWidget {
                     ),
                     Text(
                       'Дедлайн: $formattedDeadline',
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white, // Белый текст для дедлайна
+                      ),
                     ),
                   ],
                 ),
@@ -92,7 +72,12 @@ class TaskItem extends StatelessWidget {
                         // Например, можно открыть диалог редактирования задачи
                         print('Редактировать задачу');
                       },
-                      icon: const Icon(Icons.edit),
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Color(
+                            0xFFEAEAEA), // Белый цвет для иконки редактирования
+                        size: 20, // Устанавливаем размер иконки 14px
+                      ),
                     ),
                     IconButton(
                       onPressed: () {
@@ -100,7 +85,11 @@ class TaskItem extends StatelessWidget {
                         // Например, можно показать диалог подтверждения удаления
                         print('Удалить задачу');
                       },
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Color(0xFFB92222), // Цвет для иконки удаления
+                        size: 20, // Устанавливаем размер иконки 14px
+                      ),
                     ),
                   ],
                 ),
