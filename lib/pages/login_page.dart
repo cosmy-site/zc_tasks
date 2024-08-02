@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                   height: 16.0), // Отступ между логотипом и названием
               // Название приложения
-              Text(
+              const Text(
                 'Personal.Guide',
                 style: TextStyle(
                   fontSize: 24,

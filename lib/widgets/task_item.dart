@@ -5,8 +5,7 @@ class TaskItem extends StatelessWidget {
   final String taskName;
   final DateTime deadline;
 
-  const TaskItem({Key? key, required this.taskName, required this.deadline})
-      : super(key: key);
+  const TaskItem({super.key, required this.taskName, required this.deadline});
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ class TasksTheme {
       brightness: Brightness.light, // Светлая тема
       primary: const Color(0xFF3F88F7), // Основной цвет
       onPrimary: Colors.white, // Цвет текста на основном фоне
-      secondary: Color(0xFFEAEAEA), // Вторичный цвет (заголовки, текст)
+      secondary: const Color(0xFFEAEAEA), // Вторичный цвет (заголовки, текст)
       onSecondary: Colors.black, // Цвет текста на вторичном фоне
       error: Colors.red, // Цвет ошибки
       onError: Colors.white, // Цвет текста на ошибке

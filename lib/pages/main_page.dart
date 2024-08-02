@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:zc_tasks/screens/all_tasks.dart';
-import 'package:zc_tasks/theme/theme.dart';
 import 'package:zc_tasks/screens/profile.dart'; // Импорт profile_page
 
 class MainPage extends StatefulWidget {
@@ -41,11 +40,11 @@ class _MainPageState extends State<MainPage> {
   // Функция для показа диалогового окна добавления задачи
   void _showAddTaskDialog() {
     // Создаем контроллеры для текстовых полей диалога
-    final _taskNameController = TextEditingController();
-    final _taskDescriptionController =
+    final taskNameController = TextEditingController();
+    final taskDescriptionController =
         TextEditingController(); // Контроллер для описания
-    final _deadlineController = TextEditingController();
-    DateTime? _selectedDeadline; // Переменная для хранения выбранного дедлайна
+    final deadlineController = TextEditingController();
+    DateTime? selectedDeadline; // Переменная для хранения выбранного дедлайна
 
     showDialog(
       context: context,
@@ -72,7 +71,7 @@ class _MainPageState extends State<MainPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
-                    controller: _taskNameController,
+                    controller: taskNameController,
                     decoration: const InputDecoration(
                       labelText: 'Название задачи',
                     ),
@@ -83,7 +82,7 @@ class _MainPageState extends State<MainPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: TextField(
-                    controller: _taskDescriptionController,
+                    controller: taskDescriptionController,
                     decoration: const InputDecoration(
                       labelText: 'Описание задачи',
                     ),
@@ -97,20 +96,20 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _deadlineController,
+                          controller: deadlineController,
                           decoration: const InputDecoration(
                             labelText: 'Дедлайн',
                           ),
                           readOnly: true, // Делаем поле только для чтения
                           onTap: () async {
                             // Открываем календарь для выбора даты и времени
-                            _selectedDeadline = await showDatePicker(
+                            selectedDeadline = await showDatePicker(
                               context: context,
                               initialDate: DateTime.now(),
                               firstDate: DateTime.now(),
                               lastDate: DateTime(2100),
                             );
-                            if (_selectedDeadline != null) {
+                            if (selectedDeadline != null) {
                               // Если дата выбрана, открываем TimePicker для выбора времени
                               TimeOfDay? selectedTime = await showTimePicker(
                                 context: context,
@@ -118,16 +117,16 @@ class _MainPageState extends State<MainPage> {
                               );
                               if (selectedTime != null) {
                                 // Обновляем контроллер дедлайна с выбранной датой и временем
-                                _selectedDeadline = DateTime(
-                                  _selectedDeadline!.year,
-                                  _selectedDeadline!.month,
-                                  _selectedDeadline!.day,
+                                selectedDeadline = DateTime(
+                                  selectedDeadline!.year,
+                                  selectedDeadline!.month,
+                                  selectedDeadline!.day,
                                   selectedTime.hour,
                                   selectedTime.minute,
                                 );
-                                _deadlineController.text =
+                                deadlineController.text =
                                     DateFormat('yyyy-MM-dd HH:mm')
-                                        .format(_selectedDeadline!);
+                                        .format(selectedDeadline!);
                               }
                             }
                           },
@@ -136,13 +135,13 @@ class _MainPageState extends State<MainPage> {
                       IconButton(
                         onPressed: () async {
                           // Открываем календарь для выбора даты и времени
-                          _selectedDeadline = await showDatePicker(
+                          selectedDeadline = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime.now(),
                             lastDate: DateTime(2100),
                           );
-                          if (_selectedDeadline != null) {
+                          if (selectedDeadline != null) {
                             // Если дата выбрана, открываем TimePicker для выбора времени
                             TimeOfDay? selectedTime = await showTimePicker(
                               context: context,
@@ -150,16 +149,16 @@ class _MainPageState extends State<MainPage> {
                             );
                             if (selectedTime != null) {
                               // Обновляем контроллер дедлайна с выбранной датой и временем
-                              _selectedDeadline = DateTime(
-                                _selectedDeadline!.year,
-                                _selectedDeadline!.month,
-                                _selectedDeadline!.day,
+                              selectedDeadline = DateTime(
+                                selectedDeadline!.year,
+                                selectedDeadline!.month,
+                                selectedDeadline!.day,
                                 selectedTime.hour,
                                 selectedTime.minute,
                               );
-                              _deadlineController.text =
+                              deadlineController.text =
                                   DateFormat('yyyy-MM-dd HH:mm')
-                                      .format(_selectedDeadline!);
+                                      .format(selectedDeadline!);
                             }
                           }
                         },
@@ -184,10 +183,10 @@ class _MainPageState extends State<MainPage> {
                       TextButton(
                         onPressed: () {
                           // Получаем значения из текстовых полей
-                          String taskName = _taskNameController.text;
-                          String taskDescription = _taskDescriptionController
+                          String taskName = taskNameController.text;
+                          String taskDescription = taskDescriptionController
                               .text; // Получаем описание
-                          DateTime? deadline = _selectedDeadline;
+                          DateTime? deadline = selectedDeadline;
 
                           // Проверяем, что поля не пустые
                           if (taskName.isNotEmpty && deadline != null) {
