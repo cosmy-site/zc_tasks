@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../pages/login_page.dart';
+import 'package:zc_tasks/pages/login_page.dart';
+import 'package:zc_tasks/services/firebase_auth.dart'; // Импорт AuthService
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -8,36 +9,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isEmailVerified = false; // Флаг для проверки подтверждения почты
-
-  void _showNotificationDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E), // Фон диалога
-        title: const Text(
-          'Уведомление',
-          style: TextStyle(color: Colors.white), // Белый текст заголовка
-        ),
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.white), // Белый текст сообщения
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'OK',
-              style: TextStyle(color: Colors.white), // Белый текст кнопки
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  final AuthService _authService = AuthService(); // Инициализация AuthService
 
   @override
   Widget build(BuildContext context) {
+    final user = _authService.user; // Получение текущего пользователя
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -45,26 +22,49 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Аватар
-          const CircleAvatar(
+          CircleAvatar(
             radius: 50,
-            backgroundImage: AssetImage(
-                'assets/avatar.png'), // Замените на реальный путь к аватару
+            backgroundImage: user?.photoURL != null
+                ? NetworkImage(user!.photoURL!) // Изображение из Firebase
+                : const AssetImage(
+                    'assets/avatar.png'), // Изображение по умолчанию
           ),
           const SizedBox(height: 20),
           // Почта
-          const Text(
-            'example@email.com', // Замените на реальную почту пользователя
-            style: TextStyle(fontSize: 18),
+          Text(
+            user?.email ??
+                'example@email.com', // Почта пользователя или placeholder
+            style: const TextStyle(fontSize: 18),
           ),
           const SizedBox(height: 10),
           // Кнопка подтверждения почты (отображается, если почта не подтверждена)
-          if (!isEmailVerified)
+          if (!user!.emailVerified)
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Обработка отправки запроса подтверждения почты
-                // Например, можно показать диалог с сообщением о том, что письмо отправлено
-                _showNotificationDialog(
-                    'Письмо с подтверждением отправлено на ваш адрес.');
+                await _authService.sendEmailVerification(); // Отправка запроса
+                // Отображение AlertDialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Подтверждение почты'),
+                      content:
+                          const Text('Письмо с подтверждением отправлено.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) {
+                              return const LoginPage();
+                            }));
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
@@ -75,9 +75,9 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 20),
           // Кнопка выхода из профиля
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               // Обработка выхода из профиля
-              // Например, можно перейти на страницу входа
+              await _authService.signOut(); // Выход из Firebase
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) {
                 return const LoginPage();
